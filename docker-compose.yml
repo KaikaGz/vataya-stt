@@ -1,0 +1,92 @@
+version: "3.5"
+services:
+  # survey-frontend:
+  #   build:
+  #     context: ./event-survey
+  #     dockerfile: dockerfile
+  #   image: event-survey-frontend
+  #   container_name: event-survey-frontend
+  #   hostname: event-survey-frontend
+  #   stdin_open: true
+  #   ports:
+  #     - 5000:3000
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - ./event-survey:/app-front
+  #   restart: always
+  #   networks:
+  #     - survey
+  #   environment:
+  #     - WATCHPACK_POLLING=true
+
+  vataya-stt-backend:
+    build:
+      context: ./backend
+      dockerfile: dockerfile
+    image: vataya-stt-backend
+    container_name: vataya-stt-backend
+    hostname: vataya-stt-backend
+    stdin_open: true
+    ports:
+      - 6002:6002
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./backend:/app/
+      # - ./backend:/app/node_modules
+    restart: always
+    networks:
+      - vataya-stt
+
+  vataya-stt-db:
+    container_name: vataya-stt-db
+    # image: mysql/mysql-server:8.0
+    image: mariadb:10.5
+    # command: --default-authentication-plugin=mysql_native_password
+    # command:
+    #   [
+    #     'mysqld',
+    #     '--default-authentication-plugin=mysql_native_password',
+    #     '--character-set-server=utf8mb4',
+    #     '--collation-server=utf8mb4_unicode_ci',
+    #     '--max_allowed_packet=32505856',
+    #   ]
+    restart: always
+    # restart: unless-stopped
+    ports:
+      - "6004:3306"
+    environment:
+      MYSQL_DATABASE: vataya-stt
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+      # TZ: 'Asia/Bangkok'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - stt-db:/var/lib/mysql
+      # - ./dbs/mariadb:/var/lib/mysql
+      # - my-db:/var/lib/mysql
+    networks:
+      - vataya-stt
+
+  vataya-stt-pma:
+    image: phpmyadmin/phpmyadmin
+    container_name: vataya-stt-pma
+    hostname: vataya-stt-pma
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 6003:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=vataya-stt-db
+      - UPLOAD_LIMIT=500M
+    restart: always
+    links:
+      - vataya-stt-db
+    networks:
+      - vataya-stt
+
+networks:
+  vataya-stt:
+volumes:
+  stt-db:

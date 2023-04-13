@@ -1,0 +1,15 @@
+FROM alpine
+
+RUN apk add --update nodejs npm
+
+WORKDIR /app
+
+COPY package.json .
+
+RUN npm i
+
+EXPOSE 4455
+
+RUN npm install -g nodemon
+
+CMD ["npm", "run","dev"]

@@ -1,0 +1,35 @@
+# FROM alpine
+FROM node:alpine
+
+# RUN apk add --update nodejs npm
+
+WORKDIR /app
+
+ADD package.json .
+
+# RUN npm install
+RUN npm install -g nodemon
+
+# RUN npm install -g yarn
+
+EXPOSE 6002
+
+# CMD ["npm", "start"]
+
+# FROM alpine
+
+# RUN apk add --update nodejs npm
+
+# WORKDIR /app
+
+# COPY package.json .
+
+# RUN npm i
+
+# EXPOSE 15000
+
+# RUN npm install -g nodemon
+
+# RUN npm install -g yarn
+
+# CMD ["npm", "run","dev"]

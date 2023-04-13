@@ -1,0 +1,7 @@
+node_modules
+images
+config/id_rsa.pub
+uploads
+package-lock.json
+.env
+.DS_Store
